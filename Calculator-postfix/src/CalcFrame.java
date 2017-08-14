@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import javafx.scene.paint.Color;
 
 public class CalcFrame extends JFrame {
 	
@@ -17,13 +18,14 @@ public class CalcFrame extends JFrame {
 	
 	public CalcFrame(){
 		Stack stack = new Stack();
-		
-		
-		
+
 		JTextField userInput = new JTextField();
 		userInput.setEditable(false);
 		
-		JLabel resultLabel = new JLabel("");
+		JScrollPane stackViewer = new JScrollPane();
+		JTextArea stackViewerArea = new JTextArea();
+		stackViewerArea.add(stackViewer);
+		stackViewerArea.setEditable(false);
 		
 		JButton lnButton = new JButton("ln(x)");
 		//lnButton.setBackground(Color.TRANSPARENT);
@@ -37,7 +39,7 @@ public class CalcFrame extends JFrame {
 		JButton sinButton = new JButton("sin(x)");
 		JButton cosButton = new JButton("cos(x)");
 		JButton tanButton = new JButton("tan(x)");
-		JButton squareRootButton = new JButton("sqrt");
+		JButton squareRootButton = new JButton("\u221A");
 		JButton oneButton = new JButton("1");
 		JButton twoButton = new JButton("2");
 		JButton threeButton = new JButton("3");
@@ -58,7 +60,6 @@ public class CalcFrame extends JFrame {
 		JButton pushButton = new JButton("PUSH");
 		JButton divideButton = new JButton("/");
 		
-			
 		JPanel operationPanel = new JPanel();
 		GridLayout fiveBySix = new GridLayout(6, 5);
 		operationPanel.setLayout(fiveBySix);
@@ -93,13 +94,10 @@ public class CalcFrame extends JFrame {
 		operationPanel.add(pushButton);
 		operationPanel.add(divideButton);
 		
-		JPanel resetExitPanel = new JPanel();
-		//resetExitPanel.add(resetButton);
-		//resetExitPanel.add(exitButton);
-		
+		//setLayout(new GridBagLayout());
 		add(userInput, BorderLayout.PAGE_START);
 		add(operationPanel, BorderLayout.CENTER);
-		add(resetExitPanel, BorderLayout.PAGE_END);
+		add(stackViewerArea, BorderLayout.PAGE_END);
 		
 		setTitle("Calculator");
 		setSize(600,600);
@@ -109,132 +107,253 @@ public class CalcFrame extends JFrame {
 		
 		lnButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.log(input)));
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		logButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.log10(input)));
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		CEButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				userInput.setText("");
-				//resultLabel.setText("");
-				//stack.destroy();
+				stackViewerArea.setText("");
+				stack.destroy();
 			}
 		});
 		
 		popButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					userInput.setText("");
+					stack.pop();
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		backArrowButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				String truncated = userInput.getText();
+				truncated = truncated.substring(0, truncated.length()-1);
+				userInput.setText(truncated);
 			}
 		});
 		
 		squaredButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double x = stack.pop();
-				stack.push(x * x);
+				if(!stack.isEmpty()){
+					double x = stack.pop();
+					stack.push(x * x);
+				}  else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		exponentButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double b = stack.pop();
+					if(stack.isEmpty()){
+						userInput.setText("Error: Not enough arguments.");
+						stack.push(b);
+					} else{
+						double a = stack.pop();
+						userInput.setText(Double.toString(Math.pow(a, b)));
+					}
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		sinButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.sin(input)));
+				}  else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		cosButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.cos(input)));
+				}  else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		tanButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if(!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.tan(input)));
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		squareRootButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double a = stack.pop();
-				double result = Math.sqrt(a);
-				userInput.setText(Double.toString(result));
+				if(!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.sqrt(input)));
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		oneButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("1");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("1");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("1");
+					 }
+				} else{
+					userInput.setText(userInput.getText() + "1");
+				}
 			}
 		});
 		
 		twoButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("2");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("2");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("2");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "2");
+				}
 			}
 		});
 		
 		threeButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("3");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("3");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("3");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "3");
+				}
 			}
 		});
 		
 		addButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double b = stack.pop();
-				double a = stack.pop();
-				double result = stack.add(a, b);
-				userInput.setText(String.valueOf(result));
+				if(!stack.isEmpty()){
+					double b = stack.pop();
+					if(stack.isEmpty()){
+						userInput.setText("Error: Not enough arguments.");
+						stack.push(b);
+					} else{
+						double a = stack.pop();
+						double result = stack.add(a, b);
+						userInput.setText(String.valueOf(result));
+					}
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		eExponentButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				
+				if (!stack.isEmpty()){
+					double input = stack.pop();
+					userInput.setText(Double.toString(Math.exp(input)));
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
 		fourButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("4");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("4");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("4");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "4");
+				}
 			}
 		});
 		
 		fiveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("5");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("5");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("5");
+					 }
+				} else{
+					userInput.setText(userInput.getText() + "5");
+				}
 			}
 		});
 		
 		sixButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("6");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("6");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("6");
+					 }
+				} else{
+					userInput.setText(userInput.getText() + "6");
+				}
 			}
 		});
 		
 		subtractButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double b = stack.pop();
-				double a = stack.pop();
-				double result = stack.subtract(a, b);
-				userInput.setText(String.valueOf(result));
+				if (!stack.isEmpty()){
+					double b = stack.pop();
+					if(stack.isEmpty()){
+						userInput.setText("Error: Not enough arguments.");
+						stack.push(b);
+					} else {
+						double a = stack.pop();
+						double result = stack.subtract(a, b);
+						userInput.setText(String.valueOf(result));
+					}
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
@@ -246,28 +365,61 @@ public class CalcFrame extends JFrame {
 		
 		sevenButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("7");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("7");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("7");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "7");
+				}
 			}
 		});
 		
 		eightButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("8");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("8");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("8");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "8");
+				}
 			}
 		});
 		
 		nineButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				userInput.setText("9");
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+					userInput.setText("9");
+				} else if (userInput.getText().length() > 3){
+					 if (userInput.getText().substring(0, 2).equals("Er")){
+						 userInput.setText("9");
+					 }
+				} else {
+					userInput.setText(userInput.getText() + "9");
+				}
 			}
 		});
 		
 		multiplyButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double b = stack.pop();
-				double a = stack.pop();
-				double result = stack.multiply(a, b);
-     			userInput.setText(String.valueOf(result));
+				if (!stack.isEmpty()){
+					double b = stack.pop();
+					if(stack.isEmpty()){
+						userInput.setText("Error: Not enough arguments.");
+						stack.push(b);
+					} else{
+						double a = stack.pop();
+						double result = stack.multiply(a, b);
+		     			userInput.setText(String.valueOf(result));
+					}
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		
@@ -278,31 +430,64 @@ public class CalcFrame extends JFrame {
 		});
 		
 		decimalButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				userInput.setText(".");
+			public void actionPerformed(ActionEvent e){			
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+				   userInput.getText().equals(""))
+					userInput.setText("0.");
+				String[] onlyOneDecimal = userInput.getText().split("");
+				boolean hasOneDecimal = false;
+				for (int i = 0; i < onlyOneDecimal.length; i++) {
+					if (onlyOneDecimal[i].equals("."))
+						hasOneDecimal = true;
+				}
+				if (!hasOneDecimal)
+					userInput.setText(userInput.getText() + ".");
 			}
 		});
 		
 		zeroButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				stack.push(3.14159265359);
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527"))
+					userInput.setText("0");
+				else
+					userInput.setText(userInput.getText() + "0");
 			}
 		});
 		
 		pushButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				resultLabel.setText(userInput.getText() + "\n");
-				stack.push(Double.parseDouble(userInput.getText()));
-				userInput.setText("");
+				if ( !userInput.getText().equals("")){
+					stack.push(Double.parseDouble(userInput.getText()));
+					userInput.setText("");
+					stackViewerArea.setText(stack.print());
+				} else {
+					stackViewerArea.setText(stack.print());
+				}
 			}
 		});
 		
 		divideButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				double b = stack.pop();
-				double a = stack.pop();
-				double result = stack.divide(a, b);
-				userInput.setText(String.valueOf(result));
+				if (!stack.isEmpty()){
+					double b = stack.pop();
+					//if only one argument
+					if(stack.isEmpty()){
+						userInput.setText("Error: Not enough arguments.");
+						stack.push(b);
+					} else{
+						double a = stack.pop();
+						System.out.println(b);
+						if (b == 0){
+							userInput.setText("Error: Division by zero.");
+						} 
+						else {
+						double result = stack.divide(a, b);
+						userInput.setText(String.valueOf(result));
+						}
+					}
+				} else {
+					userInput.setText("Error: Stack is empty.");
+				}
 			}
 		});
 		

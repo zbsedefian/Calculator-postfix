@@ -36,20 +36,23 @@ public class Stack {
 		return getTos().getData();
 	}
 	
-	void print(){
+	String print(){
+		String returnable = new String("");
 		if(isEmpty()){
-			JOptionPane.showMessageDialog(null, "Stack is empty.");
+			return "Stack is empty.";
 		} else {
 			Node c = getTos();
-			JOptionPane.showMessageDialog(null, "-->" + c.getData());
+			returnable = ("-->" + c.getData());
+			c = c.getNext();
 			while(c != null){
-				JOptionPane.showMessageDialog(null, "   " + c.getData());
+				returnable += "\n" + "   " + c.getData();
 				c = c.getNext();
-			}
+			}			
 		}
+		return returnable;
 	}
 	
-	private boolean isEmpty(){
+	boolean isEmpty(){
 		return (tos == null);
 	}
 	
