@@ -60,20 +60,23 @@ public class Stack {
 		setTos(null);
 	}
 	
-	double add(double a, double b){
-		return (a + b);
-	}
-	
-	double subtract(double a, double b){
-		return (a - b);
-	}
-	
-	double multiply(double a, double b){
-		return (a * b);
-	}
-	
-	double divide(double a, double b){
-		return (a / b);
+	String operation(String str, double a, double b){
+		switch(str){
+		case "ln": return Double.toString(Math.log(a));
+		case "log": return Double.toString(Math.log10(a));
+		case "square": return Double.toString(a * a);
+		case "exp": return Double.toString(Math.pow(a,  b));
+		case "sin": return Double.toString(Math.sin(a));
+		case "cos": return Double.toString(Math.cos(a));
+		case "tan": return Double.toString(Math.tan(a));
+		case "sqrt": return Double.toString(Math.sqrt(a));
+		case "add": return Double.toString(a + b);
+		case "eExp": return Double.toString(Math.exp(a));
+		case "sub": return Double.toString(a - b);
+		case "div": return Double.toString(a / b);
+		case "mul": return Double.toString(a * b);
+		}
+		return "No operation selected.";
 	}
 	
 	

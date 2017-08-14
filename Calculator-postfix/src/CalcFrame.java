@@ -111,8 +111,9 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.log(input)));
-					stack.setPreviousResult(input);
+					String result = stack.operation("ln", input, 0);
+					userInput.setText(result);
+					stack.setPreviousResult(Double.parseDouble(result));
 					stackViewerArea.setText(stack.print());
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -124,9 +125,10 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.log10(input)));
+					String result = stack.operation("log", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(input);
+					stack.setPreviousResult(Double.parseDouble(result));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -157,19 +159,21 @@ public class CalcFrame extends JFrame {
 		backArrowButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String truncated = userInput.getText();
-				truncated = truncated.substring(0, truncated.length()-1);
-				userInput.setText(truncated);
+				if(truncated.length() != 0){
+					truncated = truncated.substring(0, truncated.length()-1);
+					userInput.setText(truncated);
+				}
 			}
 		});
 		
 		squaredButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if(!stack.isEmpty()){
-					double x = stack.pop();
-					stack.push(x * x);
-					userInput.setText(Double.toString(x * x));
+					double input = stack.pop();
+					String result = stack.operation("square", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(x * x);
+					stack.setPreviousResult(Double.parseDouble(result));
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -185,9 +189,10 @@ public class CalcFrame extends JFrame {
 						stack.push(b);
 					} else{
 						double a = stack.pop();
-						userInput.setText(Double.toString(Math.pow(a, b)));
+						String result = stack.operation("exp", a, b);
+						userInput.setText(result);
 						stackViewerArea.setText(stack.print());
-						stack.setPreviousResult(Math.pow(a, b));
+						stack.setPreviousResult(Double.parseDouble(result));
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -199,9 +204,10 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.sin(input)));
+					String result = stack.operation("sin", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(Math.sin(input));
+					stack.setPreviousResult(Double.parseDouble(result));
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -212,9 +218,10 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.cos(input)));
+					String result = stack.operation("cos", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(Math.cos(input));
+					stack.setPreviousResult(Double.parseDouble(result));
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -225,7 +232,8 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if(!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.tan(input)));
+					String result = stack.operation("tan", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
 					stack.setPreviousResult(Math.tan(input));
 				} else {
@@ -238,9 +246,10 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if(!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.sqrt(input)));
+					String result = stack.operation("sqrt", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(Math.sqrt(input));
+					stack.setPreviousResult(Double.parseDouble(result));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -298,11 +307,10 @@ public class CalcFrame extends JFrame {
 						stack.push(b);
 					} else{
 						double a = stack.pop();
-						double result = stack.add(a, b);
-						userInput.setText(String.valueOf(result));
-						stack.setPreviousResult(result);
+						String result = stack.operation("add", a, b);
+						userInput.setText(result);
 						stackViewerArea.setText(stack.print());
-						stack.setPreviousResult(result);
+						stack.setPreviousResult(Double.parseDouble(result));
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -314,9 +322,10 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double input = stack.pop();
-					userInput.setText(Double.toString(Math.exp(input)));
+					String result = stack.operation("eExp", input, 0);
+					userInput.setText(result);
 					stackViewerArea.setText(stack.print());
-					stack.setPreviousResult(Math.exp(input));
+					stack.setPreviousResult(Double.parseDouble(result));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -374,10 +383,10 @@ public class CalcFrame extends JFrame {
 						stack.push(b);
 					} else {
 						double a = stack.pop();
-						double result = stack.subtract(a, b);
-						userInput.setText(String.valueOf(result));
+						String result = stack.operation("sub", a, b);
+						userInput.setText(result);
 						stackViewerArea.setText(stack.print());
-						stack.setPreviousResult(result);
+						stack.setPreviousResult(Double.parseDouble(result));
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -442,10 +451,10 @@ public class CalcFrame extends JFrame {
 						stack.push(b);
 					} else{
 						double a = stack.pop();
-						double result = stack.multiply(a, b);
-		     			userInput.setText(String.valueOf(result));
+						String result = stack.operation("mul", a, b);
+		     			userInput.setText(result);
 		     			stackViewerArea.setText(stack.print());
-		     			stack.setPreviousResult(result);
+		     			stack.setPreviousResult(Double.parseDouble(result));
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -519,10 +528,10 @@ public class CalcFrame extends JFrame {
 							userInput.setText("Error: Division by zero.");
 						} 
 						else {
-							double result = stack.divide(a, b);
-							userInput.setText(String.valueOf(result));
+							String result = stack.operation("div", a, b);
+							userInput.setText(result);
 							stackViewerArea.setText(stack.print());
-							stack.setPreviousResult(result);
+							stack.setPreviousResult(Double.parseDouble(result));
 						}
 					}
 				} else {
