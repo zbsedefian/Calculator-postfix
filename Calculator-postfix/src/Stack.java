@@ -45,7 +45,7 @@ public class Stack {
 			returnable = ("-->" + c.getData());
 			c = c.getNext();
 			while(c != null){
-				returnable += "\n" + "   " + c.getData();
+				returnable += "\n" + "    " + c.getData();
 				c = c.getNext();
 			}			
 		}
@@ -74,5 +74,18 @@ public class Stack {
 	
 	double divide(double a, double b){
 		return (a / b);
+	}
+	
+	
+	static double previousResult;
+	
+	void setPreviousResult(double result){
+		previousResult = result;
+	}
+		
+	String getPreviousResult(){
+		String previousResultStr = Double.toString(previousResult);
+		previousResultStr = previousResultStr.substring(0, previousResultStr.indexOf("."));
+		return previousResultStr;
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -24,12 +25,11 @@ public class CalcFrame extends JFrame {
 		
 		JScrollPane stackViewer = new JScrollPane();
 		JTextArea stackViewerArea = new JTextArea();
+		stackViewerArea.setText(stack.print());
 		stackViewerArea.add(stackViewer);
 		stackViewerArea.setEditable(false);
 		
 		JButton lnButton = new JButton("ln(x)");
-		//lnButton.setBackground(Color.TRANSPARENT);
-		//lnButton.setOpaque(true);
 		JButton logButton = new JButton("log(x)");
 		JButton CEButton = new JButton("CE");
 		JButton popButton = new JButton("POP");
@@ -94,13 +94,15 @@ public class CalcFrame extends JFrame {
 		operationPanel.add(pushButton);
 		operationPanel.add(divideButton);
 		
-		//setLayout(new GridBagLayout());
+		JPanel lowerPanel = new JPanel(new GridLayout(1, 2));
+		lowerPanel.add(stackViewerArea);
+		lowerPanel.add(operationPanel);
+
 		add(userInput, BorderLayout.PAGE_START);
-		add(operationPanel, BorderLayout.CENTER);
-		add(stackViewerArea, BorderLayout.PAGE_END);
+		add(lowerPanel);
 		
 		setTitle("Calculator");
-		setSize(600,600);
+		setSize(800,500);
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
@@ -110,6 +112,8 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.log(input)));
+					stack.setPreviousResult(input);
+					stackViewerArea.setText(stack.print());
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -121,6 +125,8 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.log10(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(input);
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -130,8 +136,9 @@ public class CalcFrame extends JFrame {
 		CEButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				userInput.setText("");
-				stackViewerArea.setText("");
 				stack.destroy();
+				stackViewerArea.setText(stack.print());
+				stack.setPreviousResult(0);
 			}
 		});
 		
@@ -140,6 +147,7 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					userInput.setText("");
 					stack.pop();
+					stackViewerArea.setText(stack.print());
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -159,6 +167,9 @@ public class CalcFrame extends JFrame {
 				if(!stack.isEmpty()){
 					double x = stack.pop();
 					stack.push(x * x);
+					userInput.setText(Double.toString(x * x));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(x * x);
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -175,6 +186,8 @@ public class CalcFrame extends JFrame {
 					} else{
 						double a = stack.pop();
 						userInput.setText(Double.toString(Math.pow(a, b)));
+						stackViewerArea.setText(stack.print());
+						stack.setPreviousResult(Math.pow(a, b));
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -187,6 +200,8 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.sin(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(Math.sin(input));
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -198,6 +213,8 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.cos(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(Math.cos(input));
 				}  else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -209,6 +226,8 @@ public class CalcFrame extends JFrame {
 				if(!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.tan(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(Math.tan(input));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -220,6 +239,8 @@ public class CalcFrame extends JFrame {
 				if(!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.sqrt(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(Math.sqrt(input));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -228,13 +249,13 @@ public class CalcFrame extends JFrame {
 		
 		oneButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				String previousResult = stack.getPreviousResult();
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+				   userInput.getText().equals(previousResult) ){
 					userInput.setText("1");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("1");
-					 }
-				} else{
+				}  else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("1");
+				}  else{
 					userInput.setText(userInput.getText() + "1");
 				}
 			}
@@ -242,26 +263,26 @@ public class CalcFrame extends JFrame {
 		
 		twoButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				String previousResult = stack.getPreviousResult();
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+				   userInput.getText().equals(previousResult) ){
 					userInput.setText("2");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("2");
-					 }
-				} else {
+				}  else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("2");
+				}  else {
 					userInput.setText(userInput.getText() + "2");
 				}
 			}
 		});
 		
 		threeButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult) ){
 					userInput.setText("3");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("3");
-					 }
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("3");
 				} else {
 					userInput.setText(userInput.getText() + "3");
 				}
@@ -279,6 +300,9 @@ public class CalcFrame extends JFrame {
 						double a = stack.pop();
 						double result = stack.add(a, b);
 						userInput.setText(String.valueOf(result));
+						stack.setPreviousResult(result);
+						stackViewerArea.setText(stack.print());
+						stack.setPreviousResult(result);
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -291,6 +315,8 @@ public class CalcFrame extends JFrame {
 				if (!stack.isEmpty()){
 					double input = stack.pop();
 					userInput.setText(Double.toString(Math.exp(input)));
+					stackViewerArea.setText(stack.print());
+					stack.setPreviousResult(Math.exp(input));
 				} else {
 					userInput.setText("Error: Stack is empty.");
 				}
@@ -298,13 +324,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		fourButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult) ){
 					userInput.setText("4");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("4");
-					 }
+				}  else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("4");
 				} else {
 					userInput.setText(userInput.getText() + "4");
 				}
@@ -312,13 +338,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		fiveButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult) ){
 					userInput.setText("5");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("5");
-					 }
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("5");
 				} else{
 					userInput.setText(userInput.getText() + "5");
 				}
@@ -326,13 +352,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		sixButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult) ){
 					userInput.setText("6");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("6");
-					 }
+				}  else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("6");
 				} else{
 					userInput.setText(userInput.getText() + "6");
 				}
@@ -350,6 +376,8 @@ public class CalcFrame extends JFrame {
 						double a = stack.pop();
 						double result = stack.subtract(a, b);
 						userInput.setText(String.valueOf(result));
+						stackViewerArea.setText(stack.print());
+						stack.setPreviousResult(result);
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -364,13 +392,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		sevenButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult)){
 					userInput.setText("7");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("7");
-					 }
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("7");
 				} else {
 					userInput.setText(userInput.getText() + "7");
 				}
@@ -378,13 +406,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		eightButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult)){
 					userInput.setText("8");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
-						 userInput.setText("8");
-					 }
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("8");
 				} else {
 					userInput.setText(userInput.getText() + "8");
 				}
@@ -392,13 +420,13 @@ public class CalcFrame extends JFrame {
 		});
 		
 		nineButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527")){
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult)){
 					userInput.setText("9");
-				} else if (userInput.getText().length() > 3){
-					 if (userInput.getText().substring(0, 2).equals("Er")){
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
 						 userInput.setText("9");
-					 }
 				} else {
 					userInput.setText(userInput.getText() + "9");
 				}
@@ -416,6 +444,8 @@ public class CalcFrame extends JFrame {
 						double a = stack.pop();
 						double result = stack.multiply(a, b);
 		     			userInput.setText(String.valueOf(result));
+		     			stackViewerArea.setText(stack.print());
+		     			stack.setPreviousResult(result);
 					}
 				} else {
 					userInput.setText("Error: Stack is empty.");
@@ -431,8 +461,9 @@ public class CalcFrame extends JFrame {
 		
 		decimalButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){			
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
-				   userInput.getText().equals(""))
+				   userInput.getText().equals("") || userInput.getText().equals(previousResult))
 					userInput.setText("0.");
 				String[] onlyOneDecimal = userInput.getText().split("");
 				boolean hasOneDecimal = false;
@@ -446,18 +477,27 @@ public class CalcFrame extends JFrame {
 		});
 		
 		zeroButton.addActionListener(new ActionListener(){
+			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
-				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527"))
+				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
+						   userInput.getText().equals(previousResult)){
 					userInput.setText("0");
-				else
+				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
+					 userInput.setText("0");
+				} else {
 					userInput.setText(userInput.getText() + "0");
+				}
 			}
 		});
 		
 		pushButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				if ( !userInput.getText().equals("")){
-					stack.push(Double.parseDouble(userInput.getText()));
+					try {
+						stack.push(Double.parseDouble(userInput.getText()));
+					} catch (NumberFormatException ex) {
+					    JOptionPane.showMessageDialog(null, "That's not a valid number.");
+					}
 					userInput.setText("");
 					stackViewerArea.setText(stack.print());
 				} else {
@@ -470,19 +510,19 @@ public class CalcFrame extends JFrame {
 			public void actionPerformed(ActionEvent e){
 				if (!stack.isEmpty()){
 					double b = stack.pop();
-					//if only one argument
 					if(stack.isEmpty()){
 						userInput.setText("Error: Not enough arguments.");
 						stack.push(b);
 					} else{
 						double a = stack.pop();
-						System.out.println(b);
 						if (b == 0){
 							userInput.setText("Error: Division by zero.");
 						} 
 						else {
-						double result = stack.divide(a, b);
-						userInput.setText(String.valueOf(result));
+							double result = stack.divide(a, b);
+							userInput.setText(String.valueOf(result));
+							stackViewerArea.setText(stack.print());
+							stack.setPreviousResult(result);
 						}
 					}
 				} else {
@@ -492,7 +532,7 @@ public class CalcFrame extends JFrame {
 		});
 		
 	}
-	
+
 	public static void main(String[] args){
 		CalcFrame frame = new CalcFrame();
 	}
