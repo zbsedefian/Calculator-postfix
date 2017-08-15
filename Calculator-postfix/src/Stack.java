@@ -45,7 +45,7 @@ public class Stack {
 			returnable = ("-->" + c.getData());
 			c = c.getNext();
 			while(c != null){
-				returnable += "\n" + "    " + c.getData();
+				returnable += "\n" + "   " + c.getData();
 				c = c.getNext();
 			}			
 		}
@@ -87,8 +87,8 @@ public class Stack {
 	}
 		
 	String getPreviousResult(){
-		String previousResultStr = Double.toString(previousResult);
-		previousResultStr = previousResultStr.substring(0, previousResultStr.indexOf("."));
-		return previousResultStr;
+//		String previousResultStr = Double.toString(previousResult);
+//		previousResultStr = previousResultStr.substring(0, previousResultStr.indexOf("."));
+		return Double.toString(previousResult);
 	}
 }

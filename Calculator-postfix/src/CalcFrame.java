@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -22,12 +23,14 @@ public class CalcFrame extends JFrame {
 
 		JTextField userInput = new JTextField();
 		userInput.setEditable(false);
+		userInput.setFont(new Font("Courier New", Font.BOLD, 16));
 		
 		JScrollPane stackViewer = new JScrollPane();
 		JTextArea stackViewerArea = new JTextArea();
 		stackViewerArea.setText(stack.print());
 		stackViewerArea.add(stackViewer);
 		stackViewerArea.setEditable(false);
+		stackViewerArea.setFont(new Font("Courier New", Font.BOLD, 16));
 		
 		JButton lnButton = new JButton("ln(x)");
 		JButton logButton = new JButton("log(x)");
@@ -285,10 +288,10 @@ public class CalcFrame extends JFrame {
 		});
 		
 		threeButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
-						   userInput.getText().equals(previousResult) ){
+				   userInput.getText().equals(previousResult) ){
 					userInput.setText("3");
 				} else if (userInput.getText().length() > 7 && userInput.getText().substring(0, 7).equals("Error: ")){
 					 userInput.setText("3");
@@ -333,8 +336,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		fourButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult) ){
 					userInput.setText("4");
@@ -347,8 +350,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		fiveButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult) ){
 					userInput.setText("5");
@@ -361,8 +364,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		sixButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult) ){
 					userInput.setText("6");
@@ -401,8 +404,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		sevenButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult)){
 					userInput.setText("7");
@@ -415,8 +418,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		eightButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult)){
 					userInput.setText("8");
@@ -429,8 +432,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		nineButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult)){
 					userInput.setText("9");
@@ -486,8 +489,8 @@ public class CalcFrame extends JFrame {
 		});
 		
 		zeroButton.addActionListener(new ActionListener(){
-			String previousResult = stack.getPreviousResult();
 			public void actionPerformed(ActionEvent e){
+				String previousResult = stack.getPreviousResult();
 				if(userInput.getText().equals("3.14159265359") || userInput.getText().equals("2.7182818284590452353602874713527") ||
 						   userInput.getText().equals(previousResult)){
 					userInput.setText("0");
