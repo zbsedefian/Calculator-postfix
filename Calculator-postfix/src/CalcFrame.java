@@ -1,13 +1,11 @@
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,9 +13,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class CalcFrame extends JFrame {
-	
-	private int operationSelected;
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4041676390626576339L;
+
 	public CalcFrame(){
 		Stack stack = new Stack();
 
@@ -541,11 +542,15 @@ public class CalcFrame extends JFrame {
 					userInput.setText("Error: Stack is empty.");
 				}
 			}
-		});
-		
+		});	
+	}
+	
+	private void sup(){
+		System.out.println("**************\n$$$$POLISH$$$$\n$$CALCULATOR$$\n**************");
 	}
 
 	public static void main(String[] args){
 		CalcFrame frame = new CalcFrame();
+		frame.sup();
 	}
 }

@@ -1,6 +1,3 @@
-import java.util.EmptyStackException;
-
-import javax.swing.JOptionPane;
 
 public class Stack {
 	
@@ -87,8 +84,6 @@ public class Stack {
 	}
 		
 	String getPreviousResult(){
-//		String previousResultStr = Double.toString(previousResult);
-//		previousResultStr = previousResultStr.substring(0, previousResultStr.indexOf("."));
 		return Double.toString(previousResult);
 	}
 }
